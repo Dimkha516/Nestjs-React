@@ -1,6 +1,23 @@
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 const ProductApp = () => {
+
+  useEffect(() => {
+    getProducts();
+  }, []);
+
+  const [products2, setProducts2] = useState([])
+
+  const getProducts = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/products")
+      setProducts2(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   const [products, setProducts] = useState([
     { id: 1, libelle: "Produit A", prix: 20, stock: 10 },
     { id: 2, libelle: "Produit B", prix: 30, stock: 5 },
@@ -20,10 +37,10 @@ const ProductApp = () => {
   };
 
   const handleDelete = (id) => {
-    setProducts(products.filter((product) => product.id !== id));
+    setProducts(products2.filter((product) => product.id !== id));
   };
 
-  const filteredProducts = products.filter((product) =>
+  const filteredProducts = products2.filter((product) =>
     product.libelle.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -52,7 +69,7 @@ const ProductApp = () => {
       <ul className="space-y-2">
         {filteredProducts.map((product) => (
           <li key={product.id} className="p-2 border flex justify-between items-center">
-            <span>{product.libelle} - {product.prix}€ - Stock: {product.stock}</span>
+            {/* <span>{product.libelle} - {product.prix}€ - Stock: {product.stock}</span> */}
             <button className="bg-red-500 text-white p-1 rounded" onClick={() => handleDelete(product.id)}>Supprimer</button>
           </li>
         ))}
